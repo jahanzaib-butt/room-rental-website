@@ -1,11 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rental website</title>
-</head>
-<body>
-     <a href="{% url 'create_room' %}">Create Room</a>
-</body>
-</html>
+{% extends 'main.html' %}
+{% block content %}
+<style>
+    .container{
+        display: grid;
+        grid-template-columns: 0.8fr 3fr;
+    }
+
+</style>
+    <div class="container">
+        <div>        
+            <a href="{% url 'create_room' %}"><h3>Create Room</h3></a><br>
+        </div>
+        
+        <div>
+            {{room_count}} rooms available<br> 
+                {% if room.room_count > 0 %}
+                    Available
+                {% endif %} 
+            {% for room in rooms %}
+                <a href="#">@{{room.host.username}}</a>
+                <h2>RS {{ room.price }}</h2>
+                <a href="{% url 'room' room.id %}"><h2>{{ room.title }}</h2></a>
+                <small>Beds {{ room.beds }}</small> <small>Baths {{ room.baths }}</small><br>
+                <b>Location:</b><small> {{ room.address }}</small>
+                {% if "lahore" not in room.address %}
+                    <small>, {{ room.city }}</small>
+                {% endif %}
+                <small>.{{ room.created|timesince }} ago</small>
+                
+                <hr>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

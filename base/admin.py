@@ -5,3 +5,4 @@ class productAdmin(admin.ModelAdmin):
     list_filter = ('catagory',)
 # Register your models here.
 admin.site.register(Room,productAdmin)
+admin.site.register(Message)
