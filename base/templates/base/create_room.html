@@ -1,5 +1,48 @@
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Submit</button>
-</form>
+{% extends 'main.html' %}
+{% block content %}
+<h2>Create Room</h2>
+{% if user.is_authenticated %}
+    <p>Logged in as: {{ user.username }}</p>
+    <form method="POST">
+        {% csrf_token %}
+        
+        <label for="title">Room Title:</label>
+        <input type="text" name="title" required><br>
+        
+        <label for="description">Description:</label>
+        <textarea name="description" required></textarea><br>
+        
+        <label for="price">Price:</label>
+        <input type="number" name="price" step="0.01" required><br>
+        
+        <label for="beds">Number of Beds:</label>
+        <input type="number" name="beds" required><br>
+        
+        <label for="baths">Number of Baths:</label>
+        <input type="number" name="baths" required><br>
+        
+        <label for="category">Category:</label>
+        <select name="category" required>
+            {% for value, display in categories %}
+                <option value="{{ value }}">{{ display }}</option>
+            {% endfor %}
+        </select><br>
+        
+        <label for="phone">Phone:</label>
+        <input type="number" name="phone" required><br>
+        
+        <label for="city">City:</label>
+        <input type="text" name="city" required><br>
+        
+        <label for="area">Area:</label>
+        <input type="text" name="area" required><br>
+        
+        <label for="address">Address:</label>
+        <input type="text" name="address" required><br>
+        
+        <button type="submit">Create Room</button>
+    </form>
+{% else %}
+    <p>You need to <a href="{% url 'login' %}">login</a> to create a room.</p>
+{% endif %}
+{% endblock %}

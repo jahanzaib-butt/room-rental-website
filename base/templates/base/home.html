@@ -28,17 +28,20 @@
     </div>
 
     <div class="rooms">
-        <h2>{{ room_count }} rooms available</h2>
+        <small>{{ room_count }} rooms available</small><hr>
+        
         {% for room in rooms %}
-            <a href="#">@{{ room.host.username }}</a>
-            <h2>RS {{ room.price }}</h2>
-            <a href="{% url 'room' room.id %}"><h2>{{ room.title }}</h2></a>
-            <small>Beds {{ room.beds }}</small> <small>Baths {{ room.baths }}</small><br>
-            <b>Location:</b><small> {{ room.address }}</small>
-            <small>, {{ room.city }}</small>
-            <small>.{{ room.created|timesince }} ago</small>
-            <hr>
+            <h2>Price: {{ room.price }}</h2> 
+            <h2><a href="{% url 'room' room.id %}">{{ room.title }}</a></h2>
+             <!-- Owner's username -->
+             <p>Created by: {{ room.owner.username }}</p>
+             <br>
+             <b>Location:</b> <small>{{room.area}} ,{{room.city}}</small><br>
+            <b>Beds: {{ room.beds }}</b>
+            <b>Baths: {{ room.baths }}</b>
+            <hr> 
         {% endfor %}
+
     </div>
 </div>
 {% endblock %}
