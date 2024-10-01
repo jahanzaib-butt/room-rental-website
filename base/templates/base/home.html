@@ -19,7 +19,8 @@
         
         <div>
             <hr>
-            <b><h2>Browse by category</h2></b><hr>
+            <b><h2>Browse by category</h2></b>
+            <hr>
             <a href="{% url 'home' %}"><h3>All</h3></a>
             {% for category in categories %}
                 <h3><a href="{% url 'home' %}?q={{ category }}">{{ category }}</a></h3>
