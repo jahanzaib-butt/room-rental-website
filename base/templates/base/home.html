@@ -1,35 +1,44 @@
 {% extends 'main.html' %}
 {% block content %}
 <style>
-    .container{
+    .container {
         display: grid;
-        grid-template-columns: 0.8fr 3fr;
+        grid-template-columns: 1fr 3fr; /* Adjusted column sizes */
     }
-
+    .sidebar {
+        padding: 20px; /* Add some padding */
+        border-right: 1px solid #ccc; /* Optional: Add a border for separation */
+    }
+    .rooms {
+        padding: 20px; /* Add some padding */
+    }
 </style>
-    <div class="container">
-        <div>        
-            <a href="{% url 'create_room' %}"><h3>Create Room</h3></a><br>
-        </div>
+<div class="container">
+    <div class="sidebar">
+        <a href="{% url 'create_room' %}"><h3>Create Room</h3></a>
         
         <div>
-            {{room_count}} rooms available<br> 
-                {% if room.room_count > 0 %}
-                    Available
-                {% endif %} 
-            {% for room in rooms %}
-                <a href="#">@{{room.host.username}}</a>
-                <h2>RS {{ room.price }}</h2>
-                <a href="{% url 'room' room.id %}"><h2>{{ room.title }}</h2></a>
-                <small>Beds {{ room.beds }}</small> <small>Baths {{ room.baths }}</small><br>
-                <b>Location:</b><small> {{ room.address }}</small>
-                {% if "lahore" not in room.address %}
-                    <small>, {{ room.city }}</small>
-                {% endif %}
-                <small>.{{ room.created|timesince }} ago</small>
-                
-                <hr>
+            <hr>
+            <b><h2>Browse by category</h2></b><hr>
+            <a href="{% url 'home' %}"><h3>All</h3></a>
+            {% for category in categories %}
+                <h3><a href="{% url 'home' %}?q={{ category }}">{{ category }}</a></h3>
             {% endfor %}
         </div>
     </div>
+
+    <div class="rooms">
+        <h2>{{ room_count }} rooms available</h2>
+        {% for room in rooms %}
+            <a href="#">@{{ room.host.username }}</a>
+            <h2>RS {{ room.price }}</h2>
+            <a href="{% url 'room' room.id %}"><h2>{{ room.title }}</h2></a>
+            <small>Beds {{ room.beds }}</small> <small>Baths {{ room.baths }}</small><br>
+            <b>Location:</b><small> {{ room.address }}</small>
+            <small>, {{ room.city }}</small>
+            <small>.{{ room.created|timesince }} ago</small>
+            <hr>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}

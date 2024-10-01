@@ -1,99 +1,15 @@
-<style>
-    .room-info {
-      background-color: #f7f7f7;
-      padding: 30px;
-      border: 1px solid #ddd;
-      border-radius: 15px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-  
-    .room-info h1 {
-      color: #3498db; /* blue */
-      font-weight: bold;
-      font-size: 24px;
-      margin-bottom: 15px;
-      text-align: center;
-    }
-  
-    .room-info h4 {
-      color: #e74c3c; /* orange */
-      font-weight: bold;
-      font-size: 18px;
-      margin-bottom: 5px;
-    }
-  
-    .room-info small {
-      color: #666;
-      font-size: 14px;
-    }
-  
-    .room-info p {
-      margin-bottom: 15px;
-    }
-  
-    .room-info .info-section {
-      margin-bottom: 20px;
-      padding: 20px;
-      background-color: #fff;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-  
-    .room-info .info-section:last-child {
-      margin-bottom: 0;
-    }
-  
-    .room-info .info-section h4 {
-      margin-top: 0;
-    }
-  
-    .room-info .info-section:nth-child(1) {
-      background-color: #f2f2f2; /* light gray */
-    }
-  
-    .room-info .info-section:nth-child(2) {
-      background-color: #dff0d8; /* light green */
-    }
-  
-    .room-info .info-section:nth-child(3) {
-      background-color: #fcf8e3; /* light yellow */
-    }
-  </style>
-  
-  <div class="room-info">
-    <h1>{{room.title}}</h1>
-    <div class="info-section">
-      <h4>Description:</h4>
-      <small><p>{{room.description}}</p></small>
-    </div>
-    <div class="info-section">
-      <h4>Phone No:</h4>
-      <small><p>{{room.phone}}</p></small>
-    </div>
-    <div class="info-section">
-      <h4>Address:</h4>
-      <small>{{room.address}}</small>
-    </div>
-  </div>
-
-
-
-
-  
-
-
-  <div>
-    <h1>{{room.title}}</h1>
-    <h4>Description:</h4><small><p>{{room.description}}</p></small>
-    <h4>Phone No:</h4><small><p>{{room.phone}}</p></small>
-    <h4>Address:</h4><small>{{room.address}}</small>
-    <small>,{{room.city}}</small>
+{% extends 'main.html' %}
+{% block content %}
+<div>
+  <h1>{{room.title}}</h1>
+  <span style="white-space: nowrap;">Catagory:{{room.catagory}}</span>
+  <h4>Description:</h4><small><p>{{room.description}}</p></small>
+  <h4>Phone No:</h4><small><p>{{room.phone}}</p></small>
+  <h4>Address:</h4><small>{{room.address}}</small>
+  <small>,{{room.city}}</small>
+  <h1>Conversation</h1><hr>
 </div>
-
+{% endblock %}
 
 
 

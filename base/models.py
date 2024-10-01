@@ -3,34 +3,31 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 CATAGORY = (
-    ('Home','Home'),
-    ('Apartment','Apartment'),
-    ('ROOMS','Rooms'),
-    ('Office','Office'),
-    ('Farmhouse','Farmhouse')
+    ('Home', 'Home'),
+    ('Apartment', 'Apartment'),
+    ('ROOMS', 'ROOMS'),
+    ('Office', 'Office'),
+    ('Farmhouse', 'Farmhouse')
 )
-class  Room(models.Model):
-    host = models.ForeignKey(User,on_delete=models.CASCADE,null=True)
+
+class Room(models.Model):
     title = models.CharField(max_length=255)
-    catagory =  models.CharField(max_length=255,choices=CATAGORY,null=True)
-    description = models.TextField(null=True,blank=True)
-    address = models.TextField(null=True,blank=True)
-    price = models.PositiveBigIntegerField()
+    description = models.TextField(blank=True, null=True)
+    address = models.TextField(blank=True, null=True)
+    price = models.IntegerField()
+    catagory = models.CharField(max_length=255,choices=CATAGORY, null=True)  # Ensure this is not unique
+    beds = models.IntegerField()
+    baths = models.IntegerField()
     city = models.CharField(max_length=255)
-    phone = models.PositiveBigIntegerField(default=0)
-    beds = models.PositiveBigIntegerField()
-    baths = models.PositiveBigIntegerField()
+    phone = models.PositiveIntegerField()
+    host = models.ForeignKey(User, on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True)
-    created = models.DateTimeField(auto_now_add=True, null =  True)
 
-    # images  = models.ImageField(null=True,blank=True)
     class Meta:
-        ordering = ['-updated','-created']
-
+        ordering = ['-created','-updated']
     def __str__(self):
-        host_username = self.host.username if self.host else "Unknown"
-        return f'{self.title} ordered by "{host_username}"'
-
+        return self.title
 
 class Message(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -44,6 +41,4 @@ class Message(models.Model):
 
     def __str__(self):
         return self.body[:50]
-
-        
 
