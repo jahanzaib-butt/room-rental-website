@@ -61,3 +61,7 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.username
+
+class RoomImage(models.Model):
+    room = models.ForeignKey(Room, related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='room_images/')

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import RoomForm, RegistrationForm
+from .forms import RoomForm, RegistrationForm, RoomImage  # Ensure correct imports
 from .models import Room, CATAGORY, Message, Profile
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
@@ -33,11 +33,17 @@ def home(request):
 @login_required(login_url='login')
 def create_room(request):
     if request.method == 'POST':
-        form = RoomForm(request.POST,request.FILES)
+        form = RoomForm(request.POST, request.FILES)
         if form.is_valid():
             room = form.save(commit=False)
             room.owner = request.user  # Set the logged-in user as the room owner
             room.save()
+            
+            # Handle multiple image uploads
+            images = request.FILES.getlist('images')
+            for image in images:
+                RoomImage.objects.create(room=room, image=image)
+                
             return redirect('home')
     else:
         form = RoomForm()  # Create an instance of the form
@@ -68,6 +74,12 @@ def room_edit(request, pk):
         form = RoomForm(request.POST, request.FILES, instance=room)  # Ensure request.FILES is included
         if form.is_valid():
             form.save()  # Save the updated room
+            
+            # Handle multiple image uploads
+            images = request.FILES.getlist('images')
+            for image in images:
+                RoomImage.objects.create(room=room, image=image)
+                
             return redirect('room', pk=room.id)  # Redirect to the room detail page
         else:
             print(form.errors)  # Debugging: print form errors to console
