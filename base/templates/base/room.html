@@ -9,6 +9,20 @@
   <small>,{{room.city}}</small>
   <h1>Conversation</h1><hr>
 </div>
+
+<div>  
+  <div id="messages">
+    {% for message in room.messages.all %}
+      <p><strong>{{ message.user.username }}:</strong> {{ message.text }}</p>  <!-- Display username -->
+    {% endfor %}
+  </div>
+
+  <form method="POST" action="{% url 'send_message' room.id %}">
+    {% csrf_token %}
+    <textarea name="message" required></textarea>
+    <button type="submit">Send</button>
+  </form>
+</div>
 {% endblock %}
 
 

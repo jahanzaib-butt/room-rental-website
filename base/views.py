@@ -1,6 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RoomForm, RegistrationForm
-from .models import Room, CATAGORY
+from .models import Room, CATAGORY, Message
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
@@ -101,3 +101,18 @@ def profile(request):
     user = Room.objects.all()
     context = {'user':user}
     return render(request,'base/profile.html',context)
+
+@login_required  # Ensure the user is logged in
+def send_message(request, room_id):
+    room = get_object_or_404(Room, id=room_id)
+    if request.method == 'POST':
+        message_text = request.POST['message']
+        Message.objects.create(room=room, user=request.user, text=message_text)  # Save the user object
+        return redirect('room_detail', room_id=room.id)  # Redirect to the room detail page
+
+def room_detail(request, room_id):
+    room = get_object_or_404(Room, id=room_id)
+    context = {
+        'room': room,
+    }
+    return render(request, 'base/room.html', context)  # Ensure this matches your template path

@@ -1,6 +1,7 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views
+from .views import send_message, room_detail  # Ensure you import your views
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -12,4 +13,6 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('delete/<str:pk>/', views.room_delete, name='room_delete'),
     path('edit/<str:pk>/', views.room_edit, name='room_edit'),
+    path('room/<int:room_id>/', room_detail, name='room_detail'),  # Room detail view
+    path('room/<int:room_id>/send_message/', send_message, name='send_message'),  # Send message view
 ]

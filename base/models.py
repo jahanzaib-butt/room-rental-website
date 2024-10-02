@@ -32,14 +32,13 @@ class Room(models.Model):
         return self.title
 
 class Message(models.Model):
+    room = models.ForeignKey(Room, related_name='messages', on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    body = models.TextField()
-    updated = models.DateTimeField(auto_now=True)
-    created = models.DateTimeField(auto_now_add=True)
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering =  ["-updated", "-created"]
+        ordering = ['created_at']
 
     def __str__(self):
         return self.body[:50]
