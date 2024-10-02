@@ -9,4 +9,5 @@ urlpatterns = [
     path('room/<int:pk>/', views.room, name='room'),
     path('login/', auth_views.LoginView.as_view(template_name='base/login.html'), name='login'),
     path('logout/', views.logout_page, name='logout'),
+    path('profile/', views.profile, name='profile'),
 ]

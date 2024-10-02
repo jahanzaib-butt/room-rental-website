@@ -4,6 +4,7 @@ from .models import Room, CATAGORY
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
+from templates import *
 
 
 # Home page with room filtering and categories
@@ -68,3 +69,13 @@ def  login_page(request):
 def logout_page(request):
     auth_logout(request)
     return redirect('login')
+
+def navbar(request):
+    room = Room.objects.all()
+    context = {'room':room}
+    return render(request,'templates/navbar.html',context)
+
+def profile(request):
+    user = Room.objects.all()
+    context = {'user':user}
+    return render(request,'base/profile.html',context)

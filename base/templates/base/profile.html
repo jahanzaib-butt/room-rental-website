@@ -1,0 +1,20 @@
+{% extends 'main.html' %}
+{% block content %}
+
+        <tbody>
+            
+            <tr>
+                <b>Name</b>
+                <td>{{ request.user.username }}</td> <!-- Display logged-in user's username -->
+            </tr>
+            <tr>
+                <b>Phone</b>
+                <td>{{ request.user.phone }}</td> <!-- Display logged-in user's phone -->
+            </tr>
+            <tr>
+                <b>Address</b>
+                <td>{{ request.user.address }}</td> <!-- Display logged-in user's address -->
+            </tr>
+            
+        </tbody>
+{% endblock %}
