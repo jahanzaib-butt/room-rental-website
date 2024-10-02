@@ -14,7 +14,7 @@ CATAGORY = (
 class RoomForm(forms.ModelForm):
     class Meta:
         model = Room
-        fields = ['title', 'description', 'price', 'beds', 'baths', 'catagory', 'phone', 'city', 'area', 'address']
+        fields = ['title', 'description', 'price', 'beds', 'baths', 'catagory', 'phone', 'city', 'area', 'address', 'image']  # Ensure 'image' is included
         widgets = {
             'catagory': forms.Select(choices=CATAGORY),  # Use dropdown for categories
         }

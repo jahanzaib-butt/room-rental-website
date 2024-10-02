@@ -1,6 +1,8 @@
 from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
+from PIL import Image as PilImage
+import os
 
 CATAGORY = (
     ('Home', 'Home'),
@@ -24,6 +26,15 @@ class Room(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)  # Add this line
     created = models.DateTimeField(auto_now_add=True,null=False)  # No need for a default since auto_now_add handles it
     updated = models.DateTimeField(auto_now=True)
+    image = models.ImageField(upload_to='room_images/', blank=True, null=True)  # Ensure this line is present
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)  # Save the original image first
+
+        if self.image:
+            img = PilImage.open(self.image.path)
+            img.thumbnail((800, 800))  # Resize image to fit within 800x800 pixels
+            img.save(self.image.path)  # Save the resized image
 
     class Meta:
         ordering = ['-created', '-updated']

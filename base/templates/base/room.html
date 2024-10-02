@@ -1,7 +1,19 @@
 {% extends 'main.html' %}
 {% block content %}
+<style>
+  .room-image {
+    width: 100%;  /* Set to 100% of the container */
+    max-width: 600px; /* Set a maximum width */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 8px; /* Optional: add rounded corners */
+  }
+</style>
 <div>
   <h1>{{room.title}}</h1>
+  {% if room.image %}  <!-- Display current image if it exists -->
+    <h3>Room Image:</h3>
+    <img src="{{ room.image.url }}" alt="{{ room.title }}" class="room-image"><br>  <!-- Add class for styling -->
+  {% endif %}<br>
   <span style="white-space: nowrap;">Catagory:{{room.catagory}}</span>
   <h4>Description:</h4><small><p>{{room.description}}</p></small>
   <h4>Phone No:</h4><small><p>{{room.phone}}</p></small>

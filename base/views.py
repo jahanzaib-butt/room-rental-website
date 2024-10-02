@@ -33,7 +33,7 @@ def home(request):
 @login_required(login_url='login')
 def create_room(request):
     if request.method == 'POST':
-        form = RoomForm(request.POST)
+        form = RoomForm(request.POST,request.FILES)
         if form.is_valid():
             room = form.save(commit=False)
             room.owner = request.user  # Set the logged-in user as the room owner
@@ -61,19 +61,19 @@ def room_delete(request,pk):
     context = {'room':room}
     return render(request,'base/room_delete.html',context)
 
-@login_required(login_url='login')
+@login_required
 def room_edit(request, pk):
-    room = Room.objects.get(id=pk)
-    if request.user != room.owner:  # Check if the logged-in user is the owner
-        return HttpResponseForbidden("You are not allowed to edit this room.")
-
+    room = get_object_or_404(Room, pk=pk)
     if request.method == 'POST':
-        form = RoomForm(request.POST, instance=room)
+        form = RoomForm(request.POST, request.FILES, instance=room)  # Ensure request.FILES is included
         if form.is_valid():
-            form.save()
-            return redirect('home')
+            form.save()  # Save the updated room
+            return redirect('room', pk=room.id)  # Redirect to the room detail page
+        else:
+            print(form.errors)  # Debugging: print form errors to console
     else:
         form = RoomForm(instance=room)
+
     context = {'form': form, 'room': room}
     return render(request, 'base/room_edit.html', context)
 
@@ -143,8 +143,8 @@ def send_message(request, room_id):
         Message.objects.create(room=room, user=request.user, text=message_text)  # Save the user object
         return redirect('room_detail', room_id=room.id)  # Redirect to the room detail page
 
-def room_detail(request, room_id):
-    room = get_object_or_404(Room, id=room_id)
+def room_detail(request, pk):  # Change 'room_id' to 'pk'
+    room = get_object_or_404(Room, id=pk)  # Use 'pk' here
     context = {
         'room': room,
     }

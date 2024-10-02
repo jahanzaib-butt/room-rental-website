@@ -2,10 +2,13 @@
 
 {% block content %}
 
-<form action="" method="POST">
+<h1>Edit Room</h1>
+<form method="POST" enctype="multipart/form-data">  <!-- Ensure enctype is set -->
     {% csrf_token %}
-    {{form}}
-    <button type="submit">submit</button>
+    {{ form.as_p }}
+    <button type="submit">Save Changes</button>
 </form>
 
+
+<a href="{% url 'room' room.id %}">Cancel</a>
 {% endblock %}

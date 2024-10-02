@@ -3,7 +3,7 @@
 <h2>Create Room</h2>
 {% if user.is_authenticated %}
     <p>Logged in as: {{ user.username }}</p>
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}  <!-- This will render the form fields, including the dropdown -->
     <button type="submit">Create Room</button>
