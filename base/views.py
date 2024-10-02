@@ -49,6 +49,28 @@ def room(request, pk):
     context = {'room': room}
     return render(request,  'base/room.html',context)
 
+@login_required(login_url='Login')
+def room_delete(request,pk):
+    room = Room.objects.get(id=pk)
+    if request.method == 'POST':
+        room.delete()
+        return redirect('home')
+    context = {'room':room}
+    return render(request,'base/room_delete.html',context)
+
+@login_required(login_url='login')
+def room_edit(request, pk):
+    room = Room.objects.get(id=pk)
+    if request.method == 'POST':
+        form = RoomForm(request.POST, instance=room)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        form = RoomForm(instance=room)
+    context = {'form': form, 'room': room}
+    return render(request, 'base/room_edit.html', context)
+
 
 
 def register(request):

@@ -32,12 +32,15 @@
         <small>{{ room_count }} rooms available</small><hr>
         
         {% for room in rooms %}
-            <h2>Price: {{ room.price }}</h2> 
-            <h2><a href="{% url 'room' room.id %}">{{ room.title }}</a></h2>
-             <!-- Owner's username -->
-             <p>Created by: {{ room.owner.username }}</p>
-             <br>
-             <b>Location:</b> <small>{{room.area}} ,{{room.city}}</small><br>
+            <h2>
+                <a href="{% url 'room' room.id %}">{{ room.title }}</a>
+                <a href="{% url 'room_delete' room.id %}"><button type="submit">Delete</button></a>
+                <a href="{% url 'room_edit' room.id %}"><button type="submit">Edit</button></a>
+            </h2>
+            <!-- Owner's username -->
+            <p>Created by: {{ room.owner.username }}</p>
+            <br>
+            <b>Location:</b> <small>{{room.area}} ,{{room.city}}</small><br>
             <b>Beds: {{ room.beds }}</b>
             <b>Baths: {{ room.baths }}</b>
             <hr> 
