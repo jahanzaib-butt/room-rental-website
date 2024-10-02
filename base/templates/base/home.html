@@ -34,11 +34,13 @@
         {% for room in rooms %}
             <h2>
                 <a href="{% url 'room' room.id %}">{{ room.title }}</a>
+                {% if user.is_authenticated and user.id == room.owner.id %}
                 <a href="{% url 'room_delete' room.id %}"><button type="submit">Delete</button></a>
                 <a href="{% url 'room_edit' room.id %}"><button type="submit">Edit</button></a>
+                {% endif %}
             </h2>
-            <!-- Owner's username -->
-            <p>Created by: {{ room.owner.username }}</p>
+            <!-- Owner's username as a link to their profile -->
+            <p>Created by: <a href="{% url 'profile' room.owner.id %}">{{ room.owner.username }}</a></p>
             <br>
             <b>Location:</b> <small>{{room.area}} ,{{room.city}}</small><br>
             <b>Beds: {{ room.beds }}</b>

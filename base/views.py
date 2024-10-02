@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
 from templates import *
+from django.http import HttpResponseForbidden 
 
 
 # Home page with room filtering and categories
@@ -52,6 +53,8 @@ def room(request, pk):
 @login_required(login_url='Login')
 def room_delete(request,pk):
     room = Room.objects.get(id=pk)
+    if request.user != room.owner:  # Check if the logged-in user is the owner
+        return HttpResponseForbidden("You are not allowed to delete this room.")
     if request.method == 'POST':
         room.delete()
         return redirect('home')
@@ -61,6 +64,9 @@ def room_delete(request,pk):
 @login_required(login_url='login')
 def room_edit(request, pk):
     room = Room.objects.get(id=pk)
+    if request.user != room.owner:  # Check if the logged-in user is the owner
+        return HttpResponseForbidden("You are not allowed to edit this room.")
+
     if request.method == 'POST':
         form = RoomForm(request.POST, instance=room)
         if form.is_valid():
@@ -98,19 +104,36 @@ def navbar(request):
     return render(request,'templates/navbar.html',context)
 
 @login_required(login_url='login')
-def profile(request):
-    profile, created = Profile.objects.get_or_create(user=request.user)  # Create if not exists
+def profile(request, user_id):
+    profile, created = Profile.objects.get_or_create(user_id=user_id)  # Create if not exists
+    rooms = Room.objects.filter(owner_id=user_id)  # Fetch rooms owned by the user
     
     if request.method == 'POST':
         profile.phone = request.POST.get('phone')
         profile.address = request.POST.get('address')
         profile.save()
-        return redirect('profile')
+        return redirect('profile', user_id=user_id)
+
+    context = {
+        'profile': profile,
+        'rooms': rooms  # Add rooms to the context
+    }
+    return render(request, 'base/profile.html', context)
+
+@login_required(login_url='login')
+def edit_profile(request, user_id):
+    profile = get_object_or_404(Profile, user_id=user_id)  # Get the profile for the user
+
+    if request.method == 'POST':
+        profile.phone = request.POST.get('phone')
+        profile.address = request.POST.get('address')
+        profile.save()
+        return redirect('profile', user_id=user_id)
 
     context = {
         'profile': profile
     }
-    return render(request, 'base/profile.html', context)
+    return render(request, 'base/edit_profile.html', context)
 
 @login_required  # Ensure the user is logged in
 def send_message(request, room_id):

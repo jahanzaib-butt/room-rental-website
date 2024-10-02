@@ -1,22 +1,29 @@
 {% extends 'main.html' %}
 
 {% block content %}
-<h2>User Profile</h2>
-<form method="POST">
-    {% csrf_token %}
-    <label for="username">Username:</label>
-    <input type="text" id="username" value="{{ profile.user.username }}" disabled><br>
+<h1>{{ profile.user.username }}'s Profile</h1>
 
-    <label for="email">Email:</label>
-    <input type="text" id="email" value="{{ profile.user.email }}" disabled><br>
+<p>Phone: {{ profile.phone }}</p>
+<p>Address: {{ profile.address }}</p>
 
-    <label for="phone">Phone:</label>
-    <input type="text" id="phone" name="phone" value="{{ profile.phone }}"><br>
+{% if user.is_authenticated and user.id == profile.user.id %}  <!-- Check if the logged-in user is the profile owner -->
+    <a href="{% url 'edit_profile' profile.user.id %}"><button>Edit Profile</button></a>  <!-- Edit Profile Button -->
+{% endif %}
 
-    <label for="address">Address:</label>
-    <input type="text" id="address" name="address" value="{{ profile.address }}"><br>
-
-    <button type="submit">Update Profile</button>
-    <a href="{% url 'home' %}">Go back</a>
-</form>
+<h2>Your Rooms</h2>
+{% if rooms %}
+    <ul>
+    {% for room in rooms %}
+        <li>
+            <a href="{% url 'room' room.id %}">{{ room.title }}</a> - 
+            {% if user.is_authenticated and user.id == room.owner.id %}
+            <a href="{% url 'room_edit' room.id %}">Edit</a> | 
+            <a href="{% url 'room_delete' room.id %}">Delete</a>
+            {% endif %}
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>You have no rooms listed.</p>
+{% endif %}
 {% endblock %}
