@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RoomForm, RegistrationForm
-from .models import Room, CATAGORY, Message
+from .models import Room, CATAGORY, Message, Profile
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
@@ -97,10 +97,20 @@ def navbar(request):
     context = {'room':room}
     return render(request,'templates/navbar.html',context)
 
+@login_required(login_url='login')
 def profile(request):
-    user = Room.objects.all()
-    context = {'user':user}
-    return render(request,'base/profile.html',context)
+    profile, created = Profile.objects.get_or_create(user=request.user)  # Create if not exists
+    
+    if request.method == 'POST':
+        profile.phone = request.POST.get('phone')
+        profile.address = request.POST.get('address')
+        profile.save()
+        return redirect('profile')
+
+    context = {
+        'profile': profile
+    }
+    return render(request, 'base/profile.html', context)
 
 @login_required  # Ensure the user is logged in
 def send_message(request, room_id):
