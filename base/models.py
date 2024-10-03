@@ -16,7 +16,7 @@ class Room(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
     address = models.TextField(blank=True, null=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=0)
     catagory = models.CharField(max_length=255, choices=CATAGORY, null=True)  # Ensure this is not unique
     beds = models.IntegerField(null=True)  # Allow null values
     baths = models.IntegerField(null=True)
