@@ -40,7 +40,7 @@ class Room(models.Model):
         ordering = ['-created', '-updated']
 
     def __str__(self):
-        return self.title
+        return self.title ,self.body[0:50]
 
 class Message(models.Model):
     room = models.ForeignKey(Room, related_name='messages', on_delete=models.CASCADE)
