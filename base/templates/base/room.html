@@ -164,6 +164,10 @@
 
 <div class="gallery-container">
   <h1>{{room.title}}</h1>
+  {% if user.is_authenticated and user.id == room.owner.id %}
+                <a href="{% url 'room_delete' room.id %}"><button type="submit">Delete</button></a>
+                <a href="{% url 'room_edit' room.id %}"><button type="submit">Edit</button></a>
+                {% endif %}
   {% if room.images.all %}
     <h3>Room Images:</h3>
     <div class="slideshow-container">

@@ -29,7 +29,9 @@
             <hr>
             <a href="{% url 'home' %}"><h3>All</h3></a>
             {% for category in categories %}
-                <h3><a href="{% url 'home' %}?q={{ category }}">{{ category }}</a></h3>
+                {% if category %} {# Only show if category is not empty #}
+                    <h3><a href="{% url 'home' %}?q={{ category }}">{{ category }}</a></h3>
+                {% endif %}
             {% endfor %}
         </div>
     </div>

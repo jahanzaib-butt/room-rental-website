@@ -19,7 +19,8 @@ def home(request):
     ).select_related('owner')
 
     room_count = rooms.count()
-    categories = Room.objects.values_list('catagory', flat=True).distinct()  # Get distinct categories
+    # Use distinct() to get unique categories
+    categories = Room.objects.values_list('catagory', flat=True).distinct().order_by('catagory')
 
     context = {
         'rooms': rooms,
