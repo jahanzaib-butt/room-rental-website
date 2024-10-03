@@ -1,5 +1,285 @@
 {% extends 'main.html' %}
 {% block content %}
+
+
+
+
+<style>
+  .gallery-container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+
+  .slideshow-container {
+    position: relative;
+    background: #f8f8f8;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+
+  .mySlides {
+    display: none;
+    aspect-ratio: 10/5;
+    width: 100%;
+    background: #f0f0f0;
+  }
+
+  .room-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+
+  .room-image:hover {
+    transform: scale(1.02);
+  }
+
+  .prev, .next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+    font-weight: bold;
+    font-size: 24px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    z-index: 2;
+  }
+
+  .prev {
+    left: 20px;
+  }
+
+  .next {
+    right: 20px;
+  }
+
+  .prev:hover, .next:hover {
+    background: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+
+  .dots-container {
+    text-align: center;
+    padding: 1rem 0;
+  }
+
+  .dot {
+    height: 10px;
+    width: 10px;
+    margin: 0 6px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    transition: all 0.3s ease;
+  }
+
+  .active, .dot:hover {
+    background-color: #555;
+    transform: scale(1.2);
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.95);
+    backdrop-filter: blur(5px);
+    animation: fadeIn 0.3s;
+  }
+
+  .modal-content {
+    max-width: 90%;
+    max-height: 90vh;
+    margin: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: zoomIn 0.3s;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes zoomIn {
+    from { transform: translate(-50%, -50%) scale(0.9); }
+    to { transform: translate(-50%, -50%) scale(1); }
+  }
+
+  .close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: white;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+    z-index: 1001;
+  }
+
+  .close:hover {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+
+  /* Room info styling */
+  .room-info {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .room-info h1 {
+    margin-bottom: 1.5rem;
+    color: #333;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 0.5rem;
+  }
+</style>
+
+<div class="gallery-container">
+  <h1>{{room.title}}</h1>
+  {% if room.images.all %}
+    <h3>Room Images:</h3>
+    <div class="slideshow-container">
+      {% for image in room.images.all %}
+        <div class="mySlides">
+          <img src="{{ image.image.url }}" alt="{{ room.title }}" class="room-image" onclick="openModal(this.src, '{{ room.title }}')">
+        </div>
+      {% endfor %}
+      <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+      <a class="next" onclick="plusSlides(1)">&#10095;</a>
+    </div>
+
+    <div class="dots-container">
+      {% for image in room.images.all %}
+        <span class="dot" onclick="currentSlide({{ forloop.counter }})"></span>
+      {% endfor %}
+    </div>
+
+    <div id="imageModal" class="modal" onclick="closeModal()">
+      <span class="close">&times;</span>
+      <img class="modal-content" id="modalImage" alt="Room Image" onclick="event.stopPropagation()">
+    </div>
+  {% endif %}
+</div>
+
+<div class="room-info">
+  <h1>Info</h1>
+  <div class="info-grid">
+    <p><strong>Category:</strong> {{room.catagory}}</p>
+    <div class="description">
+      <h4>Description:</h4>
+      <p>{{room.description}}</p>
+    </div>
+    <p><strong>Phone:</strong> {{room.phone}}</p>
+    <p><strong>Address:</strong> {{room.address}}, {{room.city}}</p>
+    <h1>Conversation</h1>
+    <hr>
+    <div id="messages">
+      {% for message in room.messages.all %}
+        <p><strong>{{ message.user.username }}:</strong> {{ message.text }}</p>  <!-- Display username -->
+      {% endfor %}
+    </div>
+  
+    <form method="POST" action="{% url 'send_message' room.id %}">
+      {% csrf_token %}
+      <textarea name="message" required></textarea>
+      <button type="submit">Send</button>
+    </form>
+
+  </div>
+</div>
+
+
+<!-- Rest of your existing template code for messages, etc. -->
+
+<script>
+  let slideIndex = 1;
+  showSlides(slideIndex);
+  
+  function plusSlides(n) {
+    showSlides(slideIndex += n);
+  }
+  
+  function currentSlide(n) {
+    showSlides(slideIndex = n);
+  }
+  
+  function showSlides(n) {
+    let slides = document.getElementsByClassName("mySlides");
+    let dots = document.getElementsByClassName("dot");
+    
+    if (n > slides.length) slideIndex = 1;
+    if (n < 1) slideIndex = slides.length;
+    
+    for (let i = 0; i < slides.length; i++) {
+      slides[i].style.display = "none";
+    }
+    for (let i = 0; i < dots.length; i++) {
+      dots[i].className = dots[i].className.replace(" active", "");
+    }
+    
+    slides[slideIndex-1].style.display = "block";
+    dots[slideIndex-1].className += " active";
+  }
+
+  function openModal(imageSrc) {
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("modalImage");
+    
+    modal.style.display = "block";
+    modalImg.src = imageSrc;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    const modal = document.getElementById("imageModal");
+    modal.style.display = "none";
+    document.body.style.overflow = 'auto';
+  }
+
+  document.addEventListener('keydown', function(event) {
+    if (event.key === "Escape") {
+      closeModal();
+    }
+  });
+</script>
+
+
+
+
+
+{% endblock %}
+
+
+
+
 <style>
   .room-image {
     width: 100%;  /* Set to 100% of the container */
@@ -7,22 +287,78 @@
     height: auto; /* Maintain aspect ratio */
     border-radius: 8px; /* Optional: add rounded corners */
   }
+  .slideshow-container {
+      position: relative;
+      max-width: 100%;
+      margin: auto;
+    }
+
+  .mySlides {
+      display: none;
+    }
+
+    .room-image {
+    width: 100%;  /* Set to 100% of the container */
+    max-width: 600px; /* Set a maximum width */
+    height: 300px; /* Set a fixed height */
+    object-fit: cover; /* Maintain aspect ratio and cover the area */
+    border-radius: 8px; /* Optional: add rounded corners */
+  }
+
+  .prev, .next {
+      cursor: pointer;
+      position: absolute;
+      top: 50%;
+      width: auto;
+      padding: 16px;
+      color: white;
+      font-weight: bold;
+      font-size: 18px;
+      transition: 0.6s ease;
+      border-radius: 0 3px 3px 0;
+      user-select: none;
+    }
+
+  .next {
+      right: 0;
+      border-radius: 3px 0 0 3px;
+    }
+
+  .dot {
+      height: 15px;
+      width: 15px;
+      margin: 0 2px;
+      background-color: #bbb;
+      border-radius: 50%;
+      display: inline-block;
+      transition: background-color 0.6s ease;
+    }
+
+  .active, .dot:hover {
+      background-color: #717171;
+    }
 </style>
 <div>
   <h1>{{room.title}}</h1>
-  {% if room.image %}  <!-- Display current image if it exists -->
-    <h3>Room Image:</h3>
-    <img src="{{ room.image.url }}" alt="{{ room.title }}" class="room-image"><br>  <!-- Add class for styling -->
-  {% endif %}<br>
   {% if room.images.all %}
-        <h3>Room Images:</h3>
-        {% for image in room.images.all %}
-            <img src="{{ image.image.url }}" alt="{{ room.title }}" class="room-image"><br>
-        {% endfor %}
-    {% endif %}
-    
-    <h1>Info</h1><hr>
-
+    <h3>Room Images:</h3>
+    <div class="slideshow-container">
+      {% for image in room.images.all %}
+        <div class="mySlides fade">
+          <img src="{{ image.image.url }}" alt="{{ room.title }}" class="room-image">
+        </div>
+      {% endfor %}
+      <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+      <a class="next" onclick="plusSlides(1)">&#10095;</a>
+    </div>
+    <br>
+    <div style="text-align:center">
+      {% for image in room.images.all %}
+        <span class="dot" onclick="currentSlide({{ forloop.counter }})"></span>
+      {% endfor %}
+    </div>
+  {% endif %}
+  <h1>Info</h1><hr>
   <span style="white-space: nowrap;">Catagory:{{room.catagory}}</span>
   <h4>Description:</h4><small><p>{{room.description}}</p></small>
   <h4>Phone No:</h4><small><p>{{room.phone}}</p></small>
@@ -44,7 +380,36 @@
     <button type="submit">Send</button>
   </form>
 </div>
-{% endblock %}
+
+<script>
+  let slideIndex = 1;
+  showSlides(slideIndex);
+  
+  function plusSlides(n) {
+    showSlides(slideIndex += n);
+  }
+  
+  function currentSlide(n) {
+    showSlides(slideIndex = n);
+  }
+  
+  function showSlides(n) {
+    let i;
+    let slides = document.getElementsByClassName("mySlides");
+    let dots = document.getElementsByClassName("dot");
+    if (n > slides.length) {slideIndex = 1}
+    if (n < 1) {slideIndex = slides.length}
+    for (i = 0; i < slides.length; i++) {
+      slides[i].style.display = "none";  
+    }
+    for (i = 0; i < dots.length; i++) {
+      dots[i].className = dots[i].className.replace(" active", "");
+    }
+    slides[slideIndex-1].style.display = "block";  
+    dots[slideIndex-1].className += " active";
+  }
+  </script>
+
 
 
 

@@ -153,7 +153,7 @@ def send_message(request, room_id):
     if request.method == 'POST':
         message_text = request.POST['message']
         Message.objects.create(room=room, user=request.user, text=message_text)  # Save the user object
-        return redirect('room_detail', room_id=room.id)  # Redirect to the room detail page
+        return redirect('room', pk=room.id)  # Redirect to the room detail page
 
 def room_detail(request, pk):  # Change 'room_id' to 'pk'
     room = get_object_or_404(Room, id=pk)  # Use 'pk' here
