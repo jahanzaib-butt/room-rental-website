@@ -1,16 +1,101 @@
 {% extends 'main.html' %}
-
 {% block content %}
+<style>
+    /* Container for the edit room section */
+    .edit-room-container {
+        max-width: 600px; /* Set a maximum width */
+        margin: 2rem auto; /* Center the container with top margin */
+        padding: 2rem; /* Add padding for space */
+        background-color: white; /* White background for the card effect */
+        border-radius: 12px; /* Rounded corners */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    }
 
-<h1>Edit Room</h1>
-<form method="POST" enctype="multipart/form-data">  <!-- Ensure enctype is set -->
-    {% csrf_token %}
-    {{ form.as_p }}
-    <label for="images">Upload Images:</label>
-    <input type="file" name="images" multiple><br>
-    <button type="submit">Save Changes</button>
-</form>
+    /* Headings */
+    h1 {
+        text-align: center; /* Center the heading */
+        color: #111827; /* Dark color for the heading */
+        margin-bottom: 20px; /* Space below the heading */
+    }
 
+    /* Form elements */
+    form {
+        display: flex; /* Flexbox for form layout */
+        flex-direction: column; /* Stack elements vertically */
+        gap: 15px; /* Space between form elements */
+    }
 
-<a href="{% url 'room' room.id %}">Cancel</a>
+    label {
+        font-weight: bold; /* Bold labels */
+        color: #111827; /* Dark color for labels */
+    }
+
+    input[type="file"] {
+        padding: 10px; /* Padding for input */
+        border: 1px solid #d1d5db; /* Light border */
+        border-radius: 6px; /* Rounded corners */
+        background-color: #f8fafc; /* Light background */
+        transition: border-color 0.3s ease; /* Transition for border color */
+    }
+
+    input[type="file"]:focus {
+        border-color: #10b981; /* Change border color on focus */
+    }
+
+    /* Submit button styles */
+    button[type="submit"] {
+        background-color: #10b981; /* Green background */
+        color: white; /* White text */
+        padding: 12px 20px; /* Padding for button */
+        border-radius: 8px; /* Rounded corners */
+        border: none; /* No border */
+        font-size: 1.1rem; /* Font size */
+        font-weight: bold; /* Bold text */
+        cursor: pointer; /* Pointer cursor on hover */
+        transition: background-color 0.3s ease, transform 0.2s ease; /* Transition for hover effects */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for button */
+    }
+
+    button[type="submit"]:hover {
+        background-color: #059669; /* Darker green on hover */
+        transform: translateY(-2px); /* Lift effect on hover */
+    }
+
+    /* Cancel link styles */
+    .cancel-link {
+        text-align: center; /* Center the link */
+        display: block; /* Block display for padding */
+        margin-top: 20px; /* Space above the link */
+        color: #2563eb; /* Blue color for the link */
+        text-decoration: none; /* No underline */
+        font-weight: bold; /* Bold text */
+    }
+
+    .cancel-link:hover {
+        text-decoration: underline; /* Underline on hover */
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+        .edit-room-container {
+            padding: 1.5rem; /* Reduce padding on smaller screens */
+        }
+
+        button[type="submit"] {
+            font-size: 1rem; /* Smaller font size on mobile */
+        }
+    }
+</style>
+
+<div class="edit-room-container">
+    <h1>Edit Room</h1>
+    <form method="POST" enctype="multipart/form-data">  <!-- Ensure enctype is set -->
+        {% csrf_token %}
+        {{ form.as_p }}
+        <label for="images">Upload Images:</label>
+        <input type="file" name="images" multiple><br>
+        <button type="submit">Save Changes</button>
+    </form>
+    <a href="{% url 'room' room.id %}" class="cancel-link">Cancel</a>
+</div>
 {% endblock %}

@@ -1,16 +1,105 @@
 {% extends 'main.html' %}
 {% block content %}
-<h2>Create Room</h2>
-{% if user.is_authenticated %}
-    <p>Logged in as: {{ user.username }}</p>
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <label for="images">Upload Images:</label>
-    <input type="file" name="images" multiple><br>
-    <button type="submit">Create Room</button>
-</form>
-{% else %}
-    <p>You need to <a href="{% url 'login' %}">login</a> to create a room.</p>
-{% endif %}
+<style>
+    /* Container for the create room section */
+    .create-room-container {
+        max-width: 600px; /* Set a maximum width */
+        margin: 2rem auto; /* Center the container with top margin */
+        padding: 2rem; /* Add padding for space */
+        background-color: white; /* White background for the card effect */
+        border-radius: 12px; /* Rounded corners */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    }
+
+    /* Headings */
+    h2 {
+        text-align: center; /* Center the heading */
+        color: #111827; /* Dark color for the heading */
+        margin-bottom: 20px; /* Space below the heading */
+    }
+
+    /* User info paragraph */
+    p {
+        text-align: center; /* Center the paragraph */
+        color: #4b5563; /* Subtle text color */
+        margin-bottom: 20px; /* Space below the paragraph */
+    }
+
+    /* Form elements */
+    form {
+        display: flex; /* Flexbox for form layout */
+        flex-direction: column; /* Stack elements vertically */
+        gap: 15px; /* Space between form elements */
+    }
+
+    label {
+        font-weight: bold; /* Bold labels */
+        color: #111827; /* Dark color for labels */
+    }
+
+    input[type="file"] {
+        padding: 10px; /* Padding for input */
+        border: 1px solid #d1d5db; /* Light border */
+        border-radius: 6px; /* Rounded corners */
+        background-color: #f8fafc; /* Light background */
+        transition: border-color 0.3s ease; /* Transition for border color */
+    }
+
+    input[type="file"]:focus {
+        border-color: #10b981; /* Change border color on focus */
+    }
+
+    /* Submit button styles */
+    button[type="submit"] {
+        background-color: #10b981; /* Green background */
+        color: white; /* White text */
+        padding: 12px 20px; /* Padding for button */
+        border-radius: 8px; /* Rounded corners */
+        border: none; /* No border */
+        font-size: 1.1rem; /* Font size */
+        font-weight: bold; /* Bold text */
+        cursor: pointer; /* Pointer cursor on hover */
+        transition: background-color 0.3s ease, transform 0.2s ease; /* Transition for hover effects */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for button */
+    }
+
+    button[type="submit"]:hover {
+        background-color: #059669; /* Darker green on hover */
+        transform: translateY(-2px); /* Lift effect on hover */
+    }
+
+    /* Login reminder */
+    .login-reminder {
+        text-align: center; /* Center the reminder */
+        color: #e53e3e; /* Red color for emphasis */
+        margin-top: 20px; /* Space above the reminder */
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+        .create-room-container {
+            padding: 1.5rem; /* Reduce padding on smaller screens */
+        }
+
+        button[type="submit"] {
+            font-size: 1rem; /* Smaller font size on mobile */
+        }
+    }
+</style>
+
+<div class="create-room-container">
+    <h2>Create Room</h2>
+    {% if user.is_authenticated %}
+        <p>Logged in as: {{ user.username }}</p>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <label for="images">Upload Images:</label>
+            <input type="file" name="images" multiple><br>
+            <button type="submit">Create Room</button>
+        </form>
+    {% else %}
+        <p class="login-reminder">You need to <a href="{% url 'login' %}">login</a> to create a room.</p>
+    {% endif %}
+</div>
 {% endblock %}

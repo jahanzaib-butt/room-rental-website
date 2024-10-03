@@ -134,26 +134,96 @@
     .chat-button {
         color: #10b981;
     }
+    .category-section {
+        background-color: #f3f4f6;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Category Section Styles */
+    .category-section {
+        background-color: #f3f4f6;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .category-section h2 {
+        font-size: 1.5rem;
+        color: #111827;
+        margin-bottom: 1rem;
+        text-align: center;
+        font-weight: bold;
+        border-bottom: 2px solid #e5e7eb;
+        padding-bottom: 0.5rem;
+    }
+
+    .category-container {
+    display: flex;
+    flex-direction: column; /* Change to column for vertical alignment */
+    gap: 15px; /* Add space between the category links */
+    align-items: flex-start; /* Align links to the start for a clean vertical layout */
+}
+
+    .category-link {
+        display: inline-block;
+        background-color: #e0f2fe;
+        color: #0369a1;
+        padding: 12px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        white-space: nowrap; /* Prevent text wrapping in category buttons */
+    }
+
+    .category-link:hover {
+        background-color: #0284c7;
+        color: white;
+    }
+    /* Create Room Button Styles */
+    .create-room-btn {
+        display: inline-block;
+        background-color: #10b981; /* Green background */
+        color: white; /* White text */
+        padding: 12px 24px; /* Padding for button look */
+        border-radius: 8px; /* Rounded corners */
+        text-decoration: none; /* Remove underline */
+        font-size: 1.2rem; /* Increase font size */
+        font-weight: bold; /* Bold text */
+        transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover transition */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        margin-bottom: 20px; /* Space below the button */
+    }
+
+    .create-room-btn:hover {
+        background-color: #059669; /* Darker green on hover */
+        transform: translateY(-2px); /* Lift effect on hover */
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); /* Larger shadow on hover */
+    }
 </style>
 
 <div class="container">
     <div class="sidebar">
-        <a href="{% url 'create_room' %}">
-            <h3>Create Room</h3>
-        </a>
         
-        <div>
-            <hr>
-            <h2>Browse by category</h2>
-            <hr>
-            <a href="{% url 'home' %}" class="category-link"><h3>All</h3></a>
-            {% for category in categories %}
-                {% if category %}
-                    <a href="{% url 'home' %}?q={{ category }}" class="category-link">
-                        <h3>{{ category }}</h3>
-                    </a>
-                {% endif %}
-            {% endfor %}
+        
+        <div class="category-section">
+            <a href="{% url 'create_room' %}" class="create-room-btn">
+                Create Room
+            </a>
+            <h2>Browse by Category</h2>
+            <div class="category-container">
+                <a href="{% url 'home' %}" class="category-link">All</a>
+                {% for category in categories %}
+                    {% if category %}
+                        <a href="{% url 'home' %}?q={{ category }}" class="category-link">{{ category }}</a>
+                    {% endif %}
+                {% endfor %}
+            </div>
         </div>
     </div>
     <div class="rooms">

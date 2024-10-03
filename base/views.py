@@ -15,12 +15,14 @@ def home(request):
         Q(catagory__icontains=q) |
         Q(title__icontains=q) |
         Q(owner__username__icontains=q) |
+        Q(price__icontains=q) |
         Q(description__icontains=q)
     ).select_related('owner')
 
     room_count = rooms.count()
     # Use distinct() to get unique categories
     categories = Room.objects.values_list('catagory', flat=True).distinct().order_by('catagory')
+
 
     context = {
         'rooms': rooms,
