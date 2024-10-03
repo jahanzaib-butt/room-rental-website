@@ -1,19 +1,71 @@
-<a href="{% url 'home' %}"><h1>Room Rental</h1></a>
-
-
-<form  method="GET" action="{% url 'home' %}"> 
-    <input type="text" name="q" placeholder="search rooms" />
-</form>
-
-
-{% if user.is_authenticated %}
-    
-    <a href="{% url 'logout' %}">Log out</a><br>
-    <a href="{% url 'profile' user.id %}">
-        {{user.username}}
-    </a>
-{% else %}
-    <a href="{% url 'login' %}">Log in</a> /
-    <a href="{% url 'register' %}">Register</a>
-{% endif %}
-<hr>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Rental</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333;
+            padding: 10px 20px;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+        }
+        .navbar a:hover {
+            background-color: #575757;
+            border-radius: 5px;
+        }
+        .navbar h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .search-bar {
+            display: flex;
+            align-items: center;
+        }
+        .search-bar input[type="text"] {
+            padding: 5px;
+            border: none;
+            border-radius: 5px;
+        }
+        .auth-links {
+            display: flex;
+            align-items: center;
+        }
+        .auth-links a {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{% url 'home' %}"><h1>Room Rental</h1></a>
+        <div class="search-bar">
+            <form method="GET" action="{% url 'home' %}">
+                <input type="text" name="q" placeholder="Search rooms" />
+            </form>
+        </div>
+        <div class="auth-links">
+            {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}">Log out</a>
+                <a href="{% url 'profile' user.id %}">{{user.username}}</a>
+            {% else %}
+                <a href="{% url 'login' %}">Log in</a>
+                <a href="{% url 'register' %}">Register</a>
+            {% endif %}
+        </div>
+    </div>
+    <hr>
+</body>
+</html>

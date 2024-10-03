@@ -1,65 +1,201 @@
 {% extends 'main.html' %}
 {% block content %}
 <style>
+    /* General Container */
     .container {
         display: grid;
-        grid-template-columns: 1fr 3fr; /* Adjusted column sizes */
+        grid-template-columns: 1fr 3fr;
+        gap: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+        background-color: #f8fafc;
     }
-    .sidebar {
-        padding: 20px; /* Add some padding */
-        border-right: 1px solid #ccc; /* Optional: Add a border for separation */
+
+    /* Room Card Styles */
+    .room-card {
+        background-color: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        transition: box-shadow 0.3s ease;
+        border: 1px solid #e5e7eb;
+        display: flex;
+        gap: 1rem;
+        position: relative;
     }
-    .rooms {
-        padding: 20px; /* Add some padding */
+
+    .room-card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
+
     .room-image {
-        width: 300px;  /* Set a fixed width */
-        height: 200px; /* Set a fixed height */
-        object-fit: cover; /* Maintain aspect ratio and cover the area */
-        border-radius: 8px; /* Optional: add rounded corners */
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 8px;
+        flex-shrink: 0;
+    }
+
+    /* Featured Badge */
+    .badge-featured {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background-color: #facc15;
+        color: #854d0e;
+        padding: 5px 10px;
+        font-size: 0.8rem;
+        border-radius: 6px;
+    }
+
+    /* Favorite Button */
+    .favorite-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.2rem;
+        color: #f87171;
+    }
+
+    /* Room Details */
+    .room-details {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .room-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .room-title {
+        font-size: 1.2rem;
+        color: #111827;
+        text-decoration: none;
+        margin: 0;
+        font-weight: bold;
+    }
+
+    .room-title:hover {
+        color: #4f46e5;
+    }
+
+    .room-price {
+        font-size: 1.3rem;
+        color: #10b981;
+        font-weight: bold;
+    }
+
+    /* Info Block */
+    .room-info {
+        display: flex;
+        gap: 1rem;
+        margin-top: 0.5rem;
+        color: #4b5563;
+        font-size: 0.9rem;
+    }
+
+    /* Footer Buttons */
+    .action-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+
+    .action-button {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.5rem 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        background-color: white;
+        color: #111827;
+        text-decoration: none;
+        font-weight: 500;
+        transition: background-color 0.2s ease;
+        cursor: pointer;
+    }
+
+    .action-button:hover {
+        background-color: #f3f4f6;
+    }
+
+    .phone-button {
+        color: #2563eb;
+    }
+
+    .chat-button {
+        color: #10b981;
     }
 </style>
+
 <div class="container">
     <div class="sidebar">
-        <a href="{% url 'create_room' %}"><h3>Create Room</h3></a>
+        <a href="{% url 'create_room' %}">
+            <h3>Create Room</h3>
+        </a>
         
         <div>
             <hr>
-            <b><h2>Browse by category</h2></b>
+            <h2>Browse by category</h2>
             <hr>
-            <a href="{% url 'home' %}"><h3>All</h3></a>
+            <a href="{% url 'home' %}" class="category-link"><h3>All</h3></a>
             {% for category in categories %}
-                {% if category %} {# Only show if category is not empty #}
-                    <h3><a href="{% url 'home' %}?q={{ category }}">{{ category }}</a></h3>
+                {% if category %}
+                    <a href="{% url 'home' %}?q={{ category }}" class="category-link">
+                        <h3>{{ category }}</h3>
+                    </a>
                 {% endif %}
             {% endfor %}
         </div>
     </div>
-
     <div class="rooms">
-        <small>{{ room_count }} rooms available</small><hr>
+        <small class="room-count">{{ room_count }} rooms available</small>
+        <hr>
         
         {% for room in rooms %}
-            <h2>
-                <a href="{% url 'room' room.id %}">{{ room.title }}</a>
-                {% if user.is_authenticated and user.id == room.owner.id %}
-                <a href="{% url 'room_delete' room.id %}"><button type="submit">Delete</button></a>
-                <a href="{% url 'room_edit' room.id %}"><button type="submit">Edit</button></a>
-                {% endif %}
-            </h2>
-            <!-- Display the room image if it exists -->
-            {% if room.image %}
-                <img src="{{ room.image.url }}" alt="{{ room.title }}" class="room-image">  <!-- Add class for styling -->
-            {% endif %}
-            <!-- Owner's username as a link to their profile -->
-            <p>Created by: <a href="{% url 'profile' room.owner.id %}">{{ room.owner.username }}</a></p>
-            <br>
-            <b>Location:</b> <small>{{room.area}} ,{{room.city}}</small><br>
-            <b>Beds: {{ room.beds }}</b>
-            <b>Baths: {{ room.baths }}</b>
-            <hr> 
-        {% endfor %}
+            <div class="room-card">
+                <div class="badge-featured">Featured</div>
+                <button class="favorite-button">&hearts;</button>
 
+                {% if room.image %}
+                    <img src="{{ room.image.url }}" alt="{{ room.title }}" class="room-image">
+                {% else %}
+                    <img src="/static/images/placeholder.svg" alt="Placeholder image" class="room-image">
+                {% endif %}
+
+                <div class="room-details">
+                    <div class="room-header">
+                        <span class="room-price">Rs {{ room.price }}</span>
+                        <a href="{% url 'room' room.id %}" class="room-title">{{ room.title }}</a>
+                        
+                    </div>
+                    <p>{{room.description}}, </p>
+
+                    <div class="room-info">
+                        <div><span>{{ room.beds }}</span> 🛏️</div>
+                        <div><span>{{ room.baths }}</span> 🚿</div>
+                        <!-- <div><span>5 Marla</span></div> -->
+                    </div>
+
+                    <p class="text-xs text-gray-500">Location: {{ room.area }}, {{ room.city }} • {{ room.created|timesince }} ago</p>
+
+                    <div class="action-buttons">
+                        <a href="tel:+{{ room.owner.phone }}" class="action-button phone-button">
+                            📞 Call
+                        </a>
+                       
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}
