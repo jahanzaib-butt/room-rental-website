@@ -1,103 +1,165 @@
 {% extends 'main.html' %}
+{% load crispy_forms_tags %}
 {% block content %}
+
 <style>
-    /* Container for the create room section */
+    /* Main container */
     .create-room-container {
-        max-width: 600px; /* Set a maximum width */
-        margin: 2rem auto; /* Center the container with top margin */
-        padding: 2rem; /* Add padding for space */
-        background-color: white; /* White background for the card effect */
-        border-radius: 12px; /* Rounded corners */
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 2.5rem;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     }
 
-    /* Headings */
-    h2 {
-        text-align: center; /* Center the heading */
-        color: #111827; /* Dark color for the heading */
-        margin-bottom: 20px; /* Space below the heading */
+    /* Header styling */
+    .room-header {
+        text-align: center;
+        margin-bottom: 2.5rem;
     }
 
-    /* User info paragraph */
-    p {
-        text-align: center; /* Center the paragraph */
-        color: #4b5563; /* Subtle text color */
-        margin-bottom: 20px; /* Space below the paragraph */
+    .room-header h2 {
+        font-size: 2rem;
+        color: #111827;
+        margin-bottom: 0.5rem;
     }
 
-    /* Form elements */
-    form {
-        display: flex; /* Flexbox for form layout */
-        flex-direction: column; /* Stack elements vertically */
-        gap: 15px; /* Space between form elements */
+    .user-info {
+        color: #6B7280;
+        font-size: 0.95rem;
     }
 
+    /* Form container */
+    .form-container {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    /* Form group styling */
+    .form-group {
+        margin-bottom: 1.5rem;
+        text-align: left;
+    }
+
+    /* Label styling */
     label {
-        font-weight: bold; /* Bold labels */
-        color: #111827; /* Dark color for labels */
+        display: block;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.5rem;
     }
 
-    input[type="file"] {
-        padding: 10px; /* Padding for input */
-        border: 1px solid #d1d5db; /* Light border */
-        border-radius: 6px; /* Rounded corners */
-        background-color: #f8fafc; /* Light background */
-        transition: border-color 0.3s ease; /* Transition for border color */
+    /* Required field indicator */
+    .asteriskField {
+        color: #DC2626;
+        margin-left: 4px;
     }
 
-    input[type="file"]:focus {
-        border-color: #10b981; /* Change border color on focus */
+    /* Input field styling */
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1.5px solid #E5E7EB;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
     }
 
-    /* Submit button styles */
+    .form-control:focus {
+        border-color: #10B981;
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        outline: none;
+    }
+
+    /* Textarea specific styling */
+    textarea.form-control {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    /* File upload section */
+    .file-upload-section {
+        margin-top: 2rem;
+        text-align: center;
+    }
+
+    /* Submit button */
+    .submit-section {
+        margin-top: 2rem;
+        text-align: center;
+    }
+
     button[type="submit"] {
-        background-color: #10b981; /* Green background */
-        color: white; /* White text */
-        padding: 12px 20px; /* Padding for button */
-        border-radius: 8px; /* Rounded corners */
-        border: none; /* No border */
-        font-size: 1.1rem; /* Font size */
-        font-weight: bold; /* Bold text */
-        cursor: pointer; /* Pointer cursor on hover */
-        transition: background-color 0.3s ease, transform 0.2s ease; /* Transition for hover effects */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for button */
+        background-color: #10B981;
+        color: white;
+        padding: 0.875rem 2.5rem;
+        border-radius: 8px;
+        border: none;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
     }
 
     button[type="submit"]:hover {
-        background-color: #059669; /* Darker green on hover */
-        transform: translateY(-2px); /* Lift effect on hover */
+        background-color: #059669;
+        transform: translateY(-2px);
     }
 
-    /* Login reminder */
-    .login-reminder {
-        text-align: center; /* Center the reminder */
-        color: #e53e3e; /* Red color for emphasis */
-        margin-top: 20px; /* Space above the reminder */
+    /* Override crispy-forms default styling */
+    .crispy-form-wrapper {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    /* Make all crispy form controls centered */
+    .controls {
+        text-align: left;
+        width: 100%;
     }
 
     /* Responsive adjustments */
-    @media (max-width: 600px) {
+    @media (max-width: 768px) {
         .create-room-container {
-            padding: 1.5rem; /* Reduce padding on smaller screens */
+            margin: 1rem;
+            padding: 1.5rem;
         }
 
-        button[type="submit"] {
-            font-size: 1rem; /* Smaller font size on mobile */
+        .form-container {
+            max-width: 100%;
         }
     }
 </style>
 
 <div class="create-room-container">
-    <h2>Create Room</h2>
+    <div class="room-header">
+        <h2>Create Room</h2>
+        {% if user.is_authenticated %}
+            <div class="user-info">
+                Logged in as: {{ user.username }}
+            </div>
+        {% endif %}
+    </div>
+
     {% if user.is_authenticated %}
-        <p>Logged in as: {{ user.username }}</p>
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <label for="images">Upload Images:</label>
-            <input type="file" name="images" multiple><br>
-            <button type="submit">Create Room</button>
-        </form>
+        <div class="form-container">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="crispy-form-wrapper">
+                    {{ form|crispy }}
+                </div>
+                
+                <div class="file-upload-section">
+                    <label for="images">Upload Images:</label>
+                    <input type="file" name="images" multiple class="form-control">
+                </div>
+
+                <div class="submit-section">
+                    <button type="submit">Create Room</button>
+                </div>
+            </form>
+        </div>
     {% else %}
         <p class="login-reminder">You need to <a href="{% url 'login' %}">login</a> to create a room.</p>
     {% endif %}

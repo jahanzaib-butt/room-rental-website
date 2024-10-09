@@ -1,10 +1,117 @@
 {% extends 'main.html' %}
-
+{% load crispy_forms_tags %}
 {% block content %}
-    <h2>Login</h2>
-    <form method="POST">
+
+<style>
+    .login-container {
+        max-width: 400px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .login-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .login-header h2 {
+        color: #111827;
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    /* Form styling */
+    .login-form {
+        margin-top: 1rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    /* Submit button styling */
+    .submit-btn {
+        width: 100%;
+        padding: 0.75rem;
+        background-color: #10b981;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+    }
+
+    .submit-btn:hover {
+        background-color: #059669;
+        transform: translateY(-2px);
+    }
+
+    /* Error messages */
+    .alert {
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+        background-color: #fee2e2;
+        color: #dc2626;
+        border: 1px solid #fecaca;
+    }
+
+    /* Form controls */
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #10b981;
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        outline: none;
+    }
+
+    /* Make sure crispy forms elements are styled properly */
+    .asteriskField {
+        color: #dc2626;
+        margin-left: 4px;
+    }
+
+    /* Add spacing between form elements */
+    .form-group:not(:last-child) {
+        margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 640px) {
+        .login-container {
+            margin: 1rem;
+            padding: 1.5rem;
+        }
+    }
+</style>
+
+<div class="login-container">
+    <div class="login-header">
+        <h2>Login</h2>
+        {% if form.errors %}
+            <div class="alert">
+                Please correct the errors below.
+            </div>
+        {% endif %}
+    </div>
+    
+    <form method="POST" class="login-form">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Log in</button>
+        {{ form|crispy }}
+        <button type="submit" class="submit-btn">Log in</button>
     </form>
+</div>
+
 {% endblock %}
